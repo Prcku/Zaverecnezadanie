@@ -61,10 +61,8 @@
 
     <div id="graph"></div>
 
-    <img src="ziczac.png" id="img" width="159" height="318" style="display: none;">
-</div>
-</div>
 
+</div>
 
 <script>
     let title = document.querySelector("title");
@@ -205,7 +203,7 @@
 
                             fabric.Object.prototype.transparentCorners = true;
 
-                            let car = new fabric.Rect({
+                            /*let car = new fabric.Rect({
                                 left: 200,
                                 top: 400,
                                 fill: 'blue',
@@ -215,9 +213,9 @@
                                 stroke: 'lightgray',
                                 strokeWidth: 3,
                                 selectable: false
-                            });
+                            });*/
 
-                            /*let wheel = new fabric.Rect({
+                            let wheel = new fabric.Rect({
                                 left: 210,
                                 top: 350,
                                 fill: 'orange',
@@ -227,16 +225,18 @@
                                 stroke: 'lightgray',
                                 strokeWidth: 3,
                                 selectable: false
-                            });*/
+                            });
 
-                            let wheel = new fabric.Circle({radius: 30,
-                                fill: '',
-                                stroke: 'red',
-                                strokeWidth: 3,
+                            let car = new fabric.Circle({radius: 30,
+                                fill: 'blue',
                                 originX: 'center',
                                 originY: 'center',
-                                left: 210,
-                                top: 350
+                                left: 250,
+                                top: 350+30,
+                                objectCaching: false,
+                                stroke: 'lightgray',
+                                strokeWidth: 3,
+                                selectable: false
                             })
 
                             let line = new fabric.Line([100, 20, 100, 500], {
@@ -314,13 +314,6 @@
                                 selectable: false
                             })
 
-                            let ziczac = new fabric.Image(document.getElementById("img"), {
-                                top: 350,
-                                left: 230,
-                                scaleX: 0.2,
-                                scaleY: 0.2
-                            })
-
                             if (r.value > 0) {
                                 animate = setInterval(animateUp, 50);
                             }
@@ -333,8 +326,6 @@
                                 let numberCar = dataYy[0];
                                 let numberWheel = dataDd[0];
 
-                                let scale = getScale(r.value, numberWheel);
-
                                 wheel.animate({
                                     left: 210,
                                     top: 350 - 500 * numberWheel
@@ -345,19 +336,8 @@
                                 });
 
                                 car.animate({
-                                    left: 200,
+                                    left: 250,
                                     top: 400 - 500 * numberCar
-                                }, {
-                                    onChange: canvas.renderAll.bind(canvas),
-                                    duration: 2000,
-                                    easing: fabric.util.ease.easeOutExpo
-                                });
-
-                                ziczac.animate({
-                                    left: 230,
-                                    bottom: 400,
-                                    top: 360 - 500 * numberWheel,
-                                    scaleY: scale * numberWheel + scale
                                 }, {
                                     onChange: canvas.renderAll.bind(canvas),
                                     duration: 2000,
@@ -377,8 +357,6 @@
                                 let numberCar = dataYy[0];
                                 let numberWheel = dataDd[0];
 
-                                let scale = getScale(r.value, Math.abs(numberWheel));
-
                                 wheel.animate({
                                     left: 210,
                                     top: 400 + 500 * numberWheel
@@ -389,19 +367,8 @@
                                 });
 
                                 car.animate({
-                                    left: 200,
+                                    left: 250,
                                     top: 400 + 500 * numberCar
-                                }, {
-                                    onChange: canvas.renderAll.bind(canvas),
-                                    duration: 2000,
-                                    easing: fabric.util.ease.easeOutExpo
-                                });
-
-                                ziczac.animate({
-                                    left: 230,
-                                    bottom: 400,
-                                    top: 400 + 500 * numberWheel,
-                                    scaleY: scale * numberWheel + scale
                                 }, {
                                     onChange: canvas.renderAll.bind(canvas),
                                     duration: 2000,
@@ -417,7 +384,6 @@
                                 dataDd = arrayRotate(dataDd);
                             }
 
-                            canvas.add(ziczac);
                             canvas.add(car);
                             canvas.add(wheel);
                             canvas.add(line);
@@ -432,8 +398,6 @@
                             canvas.add(topTopTopNumber);
                             canvas.add(topTopTopTopLine);
                             canvas.add(topTopTopTopNumber);
-
-
                         }
                     })
             inputCommand.value = ""
@@ -443,55 +407,6 @@
     function arrayRotate(arr) {
         arr.push(arr.shift())
         return arr;
-    }
-
-    function getScale(r, numberWheel) {
-        let scale = 0.1;
-
-        if (numberWheel < 0.12) {
-            scale = 0.25;
-        }
-
-        if (numberWheel < 0.15) {
-            scale = 0.3;
-        }
-
-        if (numberWheel < 0.18) {
-            scale = 0.32;
-        }
-
-        if (numberWheel < 0.25) {
-            scale = 0.25;
-        }
-
-        if (numberWheel < 0.29) {
-            scale = 0.45;
-        }
-
-        if (numberWheel < 0.3) {
-            scale = 0.28;
-        }
-
-        if (numberWheel < 0.31) {
-            scale = 0.25;
-        }
-
-        if (numberWheel < 0.45) {
-            scale = 0.3;
-        }
-
-        if (numberWheel < 0.46) {
-            scale = 0.3;
-        }
-
-        if (numberWheel < 0.53) {
-            scale = 0.38;
-        }
-
-        if (numberWheel < 0.62) {
-            scale = 0.5;
-        }
-        return scale;
     }
 </script>
 

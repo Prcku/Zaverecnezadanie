@@ -61,10 +61,7 @@
 
     <div id="graph"></div>
 
-    <img src="ziczac.png" id="img" width="159" height="318" style="display: none;">
 </div>
-</div>
-
 
 <script>
     let title = document.querySelector("title");
@@ -192,12 +189,15 @@
 
                             Plotly.extendTraces(graph, update1, [0])
 
-                            if (++cnt === 2000) clearInterval(interval);
+                            if (++cnt === 2000) {
+                                clearInterval(interval);
+                                clearInterval(animate);
+                            }
                             document.getElementById("button").addEventListener('click', () => {
                                 clearInterval(interval);
+                                clearInterval(animate);
                             })
                         }, 50);
-
 
                         // ANIMATION
                         function Add(dataXx, dataYy, dataDd) {
@@ -205,17 +205,17 @@
 
                             fabric.Object.prototype.transparentCorners = true;
 
-                            let car = new fabric.Rect({
-                                left: 200,
-                                top: 400,
+                            let car = new fabric.Circle({radius: 30,
                                 fill: 'blue',
-                                width: 100,
-                                height: 40,
+                                originX: 'center',
+                                originY: 'center',
+                                left: 250,
+                                top: 350+30,
                                 objectCaching: false,
                                 stroke: 'lightgray',
                                 strokeWidth: 3,
                                 selectable: false
-                            });
+                            })
 
                             let wheel = new fabric.Rect({
                                 left: 210,
@@ -304,13 +304,6 @@
                                 selectable: false
                             })
 
-                            let ziczac = new fabric.Image(document.getElementById("img"), {
-                                top: 350,
-                                left: 230,
-                                scaleX: 0.2,
-                                scaleY: 0.2
-                            })
-
                             if (r.value > 0) {
                                 animate = setInterval(animateUp, 50);
                             }
@@ -323,8 +316,6 @@
                                 let numberCar = dataYy[0];
                                 let numberWheel = dataDd[0];
 
-                                let scale = getScale(r.value, numberWheel);
-
                                 wheel.animate({
                                     left: 210,
                                     top: 350 - 500 * numberWheel
@@ -335,7 +326,7 @@
                                 });
 
                                 car.animate({
-                                    left: 200,
+                                    left: 250,
                                     top: 400 - 500 * numberCar
                                 }, {
                                     onChange: canvas.renderAll.bind(canvas),
@@ -343,31 +334,14 @@
                                     easing: fabric.util.ease.easeOutExpo
                                 });
 
-                                ziczac.animate({
-                                    left: 230,
-                                    bottom: 400,
-                                    top: 360 - 500 * numberWheel,
-                                    scaleY: scale * numberWheel + scale
-                                }, {
-                                    onChange: canvas.renderAll.bind(canvas),
-                                    duration: 2000,
-                                    easing: fabric.util.ease.easeOutExpo
-                                });
-
-                                document.getElementById("button").addEventListener('click', () => {
-                                    clearInterval(animate);
-                                })
-
-                                dataXx = arrayRotate(dataXx);
-                                dataYy = arrayRotate(dataYy);
-                                dataDd = arrayRotate(dataDd);
+                                dataXx = rotate(dataXx);
+                                dataYy = rotate(dataYy);
+                                dataDd = rotate(dataDd);
                             }
 
                             function animateDown() {
                                 let numberCar = dataYy[0];
                                 let numberWheel = dataDd[0];
-
-                                let scale = getScale(r.value, Math.abs(numberWheel));
 
                                 wheel.animate({
                                     left: 210,
@@ -379,7 +353,7 @@
                                 });
 
                                 car.animate({
-                                    left: 200,
+                                    left: 250,
                                     top: 400 + 500 * numberCar
                                 }, {
                                     onChange: canvas.renderAll.bind(canvas),
@@ -387,27 +361,11 @@
                                     easing: fabric.util.ease.easeOutExpo
                                 });
 
-                                ziczac.animate({
-                                    left: 230,
-                                    bottom: 400,
-                                    top: 400 + 500 * numberWheel,
-                                    scaleY: scale * numberWheel + scale
-                                }, {
-                                    onChange: canvas.renderAll.bind(canvas),
-                                    duration: 2000,
-                                    easing: fabric.util.ease.easeOutExpo
-                                });
-
-                                document.getElementById("button").addEventListener('click', () => {
-                                    clearInterval(animate);
-                                })
-
-                                dataXx = arrayRotate(dataXx);
-                                dataYy = arrayRotate(dataYy);
-                                dataDd = arrayRotate(dataDd);
+                                dataXx = rotate(dataXx);
+                                dataYy = rotate(dataYy);
+                                dataDd = rotate(dataDd);
                             }
 
-                            canvas.add(ziczac);
                             canvas.add(car);
                             canvas.add(wheel);
                             canvas.add(line);
@@ -422,89 +380,17 @@
                             canvas.add(topTopTopNumber);
                             canvas.add(topTopTopTopLine);
                             canvas.add(topTopTopTopNumber);
-
-
                         }
                     })
             inputCommand.value = ""
         }
     }
 
-    function arrayRotate(arr) {
+    let rotate = function (arr) {
         arr.push(arr.shift())
         return arr;
-    }
+    };
 
-    function getScale(r, numberWheel) {
-        let scale = 0.1;
-
-        if (Math.abs(r) == 0.1) {
-            if (numberWheel < 0.18) {
-                scale = 0.3;
-            }
-            if (numberWheel < 0.12) {
-                scale = 0.25;
-            } else {
-                scale = 0.45;
-            }
-        }
-        if (Math.abs(r) == 0.2) {
-            scale = 0.5;
-            if (numberWheel < 0.29) {
-                scale = 0.45;
-            }
-            if (numberWheel < 0.15) {
-                scale = 0.3;
-            }
-        }
-        if (Math.abs(r) == 0.3) {
-
-            if (numberWheel < 0.30) {
-                scale = 0.5;
-            }
-            if (numberWheel < 0.15) {
-                scale = 0.3;
-            } else {
-                scale = 0.6;
-            }
-        }
-        if (Math.abs(r) == 0.4) {
-            if (numberWheel < 0.3) {
-                scale = 0.28;
-            }
-            if (numberWheel < 0.46) {
-                scale = 0.3;
-            }
-            if (numberWheel < 0.25) {
-                scale = 0.25;
-            }
-            if (numberWheel < 0.15) {
-                scale = 0.2;
-            } else {
-                scale = 0.63;
-            }
-        }
-        if (Math.abs(r) == 0.5) {
-            if (numberWheel < 0.62) {
-                scale = 0.5;
-            }
-            if (numberWheel < 0.53) {
-                scale = 0.38;
-            }
-            if (numberWheel < 0.45) {
-                scale = 0.3;
-            }
-            if (numberWheel < 0.31) {
-                scale = 0.25;
-            }
-            if (numberWheel < 0.15) {
-                scale = 0.2;
-            } else {
-                scale = 0.71;
-            }
-        }
-        return scale;
-    }
 </script>
 
 </body>
