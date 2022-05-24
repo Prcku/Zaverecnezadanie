@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
     if ($token != null) {
         if (isset($_GET['r'])) {
             $r = $_GET['r'];
-            if(-5 < $r && $r > 5 ){
+            if(-0.4 < $r && $r > 0.6 ){
                 http_response_code(400);
                 echo json_encode("Bad Request");
             }
@@ -89,6 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
             ";
             fwrite($fp2,$input);
             $vystup = exec("octave input2.m ",$text);
+            fclose($fp2);
             $name = $_GET['name'];
             $status = "OK";
             if($text == null){
