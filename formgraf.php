@@ -17,50 +17,52 @@
 </head>
 
 <body>
-<header>
-    <h1 id="Nadpis">Final assignment</h1>
-</header>
+<section class="pattern">
+    <div class="geeks">
+        <header>
+            <h1 id="Nadpis">Final assignment</h1>
+        </header>
 
-<div class="container">
-    <div class="buttons">
-        <div class="col-sm-5 mx-auto" >
-            <select class="form-select m-3" aria-label="Default select example">
-                <option>EN</option>
-                <option>SK</option>
-            </select>
-        </div>
+        <div class="container">
+            <div class="buttons">
+                <div class="col-sm-5 mx-auto" >
+                    <select class="form-select m-3" aria-label="Default select example">
+                        <option>EN</option>
+                        <option>SK</option>
+                    </select>
+                </div>
 
 
-        <form method="post" action="email.php">
-            <a class="btn btn-secondary btn-lg h-50 m-3" href="description.php" id="popisApiPdf">Describe API</a>
+                <form method="post" action="email.php">
+                    <a class="btn btn-secondary btn-lg h-50 m-3" href="description.php" id="popisApiPdf">Describe API</a>
 
-            <input type="hidden" name="message">
-            <button type="submit" name="send_mail_button" class="btn btn-secondary btn-lg m-3" id="sendMail">Send email</button>
-        </form>
-    </div>
-
-    <form>
-        <div class="form-group col-sm-5 mx-auto">
-            <label for="name" id="names">Name</label>
-            <input type="text" class="form-control mb-3" id="name" name="name">
-            <label for="textname" id="text">Command</label>
-            <input type="text" id="textname" name="textname" class="form-control mb-3">
-
-            <div class="popup">
-                <label for="textR" id="text">R</label>
-                <input type="number" id="textR" name="textR" min="-0.5" max="0.5" class="form-control mb-3">
-                <span class="popuptext" id="myPopup">Wrong input, range is </span>
+                    <input type="hidden" name="message">
+                    <button type="submit" name="send_mail_button" class="btn btn-secondary btn-lg m-3" id="sendMail">Send email</button>
+                </form>
             </div>
-            <button type="button" id="button" onclick="ApiFunction()" class="btn btn-dark mb-3">Send</button>
+</section>
+</div>
+<form>
+    <div class="form-group col-sm-5 mx-auto">
+        <label for="name" id="names">Name</label>
+        <input type="text" class="form-control mb-3" id="name" name="name">
+        <label for="textname" id="text">Command</label>
+        <input type="text" id="textname" name="textname" class="form-control mb-3">
+
+        <div class="popup">
+            <label for="textR" id="text">R</label>
+            <input type="number" id="textR" name="textR" min="-0.5" max="0.5" class="form-control mb-3">
+            <span class="popuptext" id="myPopup">Wrong input, range is </span>
         </div>
-    </form>
+        <button type="button" id="button" onclick="ApiFunction()" class="btn btn-dark mb-3">Send</button>
+    </div>
+</form>
 
-    <div id="answerDiv"></div>
+<div id="answerDiv"></div>
 
-    <canvas id="animation" width="600" height="550"></canvas>
+<canvas id="animation" width="600" height="550"></canvas>
 
-    <div id="graph"></div>
-
+<div id="graph"></div>
 
 </div>
 
@@ -147,12 +149,21 @@
                         let dataX = []
                         let dataY = []
                         let dataD = []
+                        let dataXa = []
+                        let dataYa = []
+                        let dataDa = []
                         //let initialNumbers = numbers[0]
 
                         for (let i = 1; i < numbers.length; i++) {
                             dataX.push(numbers[i][1])
                             dataY.push(numbers[i][3])
                             dataD.push(numbers[i][2])
+                        }
+
+                        for (let i = 1; i < numbers.length-1; i++) {
+                            dataXa.push(numbers[i][1])
+                            dataYa.push(numbers[i][3])
+                            dataDa.push(numbers[i][2])
                         }
                         // GRAF
                         const graph = document.getElementById("graph");
@@ -177,7 +188,7 @@
                             title: titleGraph
                         };
 
-                        new Add(dataX, dataY, dataD);
+                        new Add(dataXa, dataYa, dataDa);
                         Plotly.newPlot(graph, data, layout);
 
                         let cnt = 0;
@@ -190,42 +201,21 @@
 
                             Plotly.extendTraces(graph, update1, [0])
 
-                            if (++cnt === 2000) clearInterval(interval);
+                            if (++cnt === 2000) {
+                                clearInterval(interval);
+                            }
                             document.getElementById("button").addEventListener('click', () => {
                                 clearInterval(interval);
+                                clearInterval(animate);
                             })
                         }, 50);
 
-
                         // ANIMATION
                         function Add(dataXx, dataYy, dataDd) {
+
                             let canvas = this.__canvas = new fabric.Canvas('animation');
 
                             fabric.Object.prototype.transparentCorners = true;
-
-                            /*let car = new fabric.Rect({
-                                left: 200,
-                                top: 400,
-                                fill: 'blue',
-                                width: 100,
-                                height: 40,
-                                objectCaching: false,
-                                stroke: 'lightgray',
-                                strokeWidth: 3,
-                                selectable: false
-                            });*/
-
-                            let wheel = new fabric.Rect({
-                                left: 210,
-                                top: 350,
-                                fill: 'orange',
-                                width: 80,
-                                height: 30,
-                                objectCaching: false,
-                                stroke: 'lightgray',
-                                strokeWidth: 3,
-                                selectable: false
-                            });
 
                             let car = new fabric.Circle({radius: 30,
                                 fill: 'blue',
@@ -238,6 +228,18 @@
                                 strokeWidth: 3,
                                 selectable: false
                             })
+
+                            let wheel = new fabric.Rect({
+                                left: 210,
+                                top: 350,
+                                fill: 'orange',
+                                width: 80,
+                                height: 30,
+                                objectCaching: false,
+                                stroke: 'lightgray',
+                                strokeWidth: 3,
+                                selectable: false
+                            });
 
                             let line = new fabric.Line([100, 20, 100, 500], {
                                 stroke: 'black',
@@ -322,17 +324,20 @@
                                 animate = setInterval(animateDown, 50);
                             }
 
+
                             function animateUp() {
+                                dataX = rotate(dataX);
+                                dataY = rotate(dataY);
+                                dataD = rotate(dataD);
                                 let numberCar = dataYy[0];
                                 let numberWheel = dataDd[0];
-
                                 wheel.animate({
                                     left: 210,
                                     top: 350 - 500 * numberWheel
                                 }, {
                                     onChange: canvas.renderAll.bind(canvas),
                                     duration: 2000,
-                                    easing: fabric.util.ease.easeOutExpo
+                                    easing: fabric.util.ease.easeOutExpo,
                                 });
 
                                 car.animate({
@@ -344,16 +349,15 @@
                                     easing: fabric.util.ease.easeOutExpo
                                 });
 
-                                document.getElementById("button").addEventListener('click', () => {
-                                    clearInterval(animate);
-                                })
-
-                                dataXx = arrayRotate(dataXx);
-                                dataYy = arrayRotate(dataYy);
-                                dataDd = arrayRotate(dataDd);
+                                dataXx = rotate(dataXx);
+                                dataYy = rotate(dataYy);
+                                dataDd = rotate(dataDd);
                             }
 
                             function animateDown() {
+                                dataX = rotate(dataX);
+                                dataY = rotate(dataY);
+                                dataD = rotate(dataD);
                                 let numberCar = dataYy[0];
                                 let numberWheel = dataDd[0];
 
@@ -375,13 +379,9 @@
                                     easing: fabric.util.ease.easeOutExpo
                                 });
 
-                                document.getElementById("button").addEventListener('click', () => {
-                                    clearInterval(animate);
-                                })
-
-                                dataXx = arrayRotate(dataXx);
-                                dataYy = arrayRotate(dataYy);
-                                dataDd = arrayRotate(dataDd);
+                                dataXx = rotate(dataXx);
+                                dataYy = rotate(dataYy);
+                                dataDd = rotate(dataDd);
                             }
 
                             canvas.add(car);
@@ -404,10 +404,11 @@
         }
     }
 
-    function arrayRotate(arr) {
+    let rotate = function (arr) {
         arr.push(arr.shift())
         return arr;
-    }
+    };
+
 </script>
 
 </body>
