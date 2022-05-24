@@ -3,7 +3,6 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-
 use PHPMailer\PHPMailer\PHPMailer;
 
 $conn = new PDO("mysql:host=localhost;dbname=Zaverecnezadanie", "xsochab", "U4IIQqq1mUB33kN");
@@ -48,20 +47,14 @@ function sendmail() {
     $name = "Zaverecne zadanie";
     $to = "zaverecnezadanie@azet.sk";                 // receiver
     $subject = "Zaverecne zadanie - logy";
-    $body = "Body text";
+    $body = "Zaverecne zadanie :)";
     $from = "zaverecnezadanie@azet.sk";
     $password = "kP8B2yecq33wNV4";
-
-    //$file_to_attach = '/testing/file.csv';          // csv
-
-    // Ignore from here
 
     require_once "PHPMailer/PHPMailer.php";
     require_once "PHPMailer/SMTP.php";
     require_once "PHPMailer/Exception.php";
     $mail = new PHPMailer();
-
-    // To Here
 
     //SMTP Settings
     $mail->isSMTP();
@@ -70,9 +63,9 @@ function sendmail() {
     $mail->SMTPAuth = true;
     $mail->Username = $from;
     $mail->Password = $password;
-    $mail->AddAttachment('logy.csv');               // csv
-    $mail->Port = 587;  // port
-    $mail->SMTPSecure = "tls";  // tls or ssl
+    $mail->AddAttachment('logy.csv');                   // csv
+    $mail->Port = 587;           // port
+    $mail->SMTPSecure = "tls";                              // tls or ssl
     $mail->smtpConnect([
         'ssl' => [
             'verify_peer' => false,
@@ -84,11 +77,11 @@ function sendmail() {
     //Email Settings
     $mail->isHTML(true);
     $mail->setFrom($from, $name);
-    $mail->addAddress($to); // enter email address whom you want to send
+    $mail->addAddress($to);
     $mail->Subject = ("$subject");
     $mail->Body = $body;
     if ($mail->send()) {
-        echo "Email is sent!";
+        header("Location: formnovy.php");
     } else {
         echo "Something is wrong: <br><br>" . $mail->ErrorInfo;
     }
