@@ -1,0 +1,180 @@
+.item1 { grid-area: header; }
+.item2 { grid-area: menu; }
+.item3 { grid-area: main; }
+.item4 { grid-area: right; }
+.item5 { grid-area: footer; }
+
+.grid-container {
+    display: grid;
+    grid-template-areas:
+    'header header header header header header'
+    'menu main main main right right'
+    'menu footer footer footer footer footer';
+    gap: 10px;
+    /*background-color: #2196F3;*/
+    padding: 10px;
+}
+
+button {
+    padding: 3%;
+}
+
+.buttons {
+    text-align: center;
+}
+
+.grid-container > div {
+    /*background-color: rgba(255, 255, 255, 0.8);*/
+    text-align: center;
+    padding: 20px 0;
+    font-size: 30px;
+}
+
+h1, h2, h3, h4 {
+    text-align: center;
+    color: white;
+    /*margin: 15px;
+    margin-bottom: 40px;*/
+}
+
+h2, h4 {
+    margin-top: 3%;
+}
+
+html, body {
+    height: 100%;
+    padding: 0;
+}
+
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+}
+
+.content {
+    min-width: 350px;
+    margin-left: auto;
+    margin-right: auto;
+    height: 100%;
+    align-content: center;
+    margin-bottom: 30%;
+}
+
+.container {
+    margin: auto;
+    padding-bottom: 5%;
+
+    align-content: center;
+    margin-left: auto;
+    margin-right: auto;
+    /*text-align: center;*/
+}
+
+.formButtons {
+    padding-top: 1%;
+    padding-bottom: 1%;
+    text-align: end;
+}
+
+#obkecSK {
+    display: none;
+    text-align: center;
+}
+
+#obkecEN {
+    text-align: center;
+}
+
+@media print {
+    button {
+        display: none;
+    }
+    title {
+        display: none;
+    }
+    footer {
+        display: none;
+    }
+    h1 {
+        margin-top: 20px;
+    }
+    #linkToMainpage {
+        display: none;
+    }
+    #generatePdfButton {
+        display: none;
+    }
+    select {
+        display: none;
+    }
+    #selectik {
+        display: none;
+    }
+}
+
+@media (min-width: 576px) {
+    .content {
+        width: 540px;;
+        /*min-height: 977px;*/
+    }
+}
+
+@media (min-width: 768px) {
+    .content {
+        width: 720px;
+        /*min-height: 969px;*/
+    }
+}
+
+@media (min-width: 992px) {
+    .content {
+        width: 960px;
+        /*min-height: 965px;*/
+    }
+}
+
+@media (min-width: 1200px) {
+    .content {
+        width: 1140px;
+        /*min-height: 961px;*/
+    }
+}
+body {
+    padding: 0;
+    margin: 0;
+}
+.geeks {
+    padding-top: 50px;
+    padding-bottom: 200px;
+    text-align: center;
+}
+
+section {
+    width: 100%;
+    min-height: 300px;
+}
+
+.pattern {
+    position: relative;
+    background-color: #554bda;
+    background-image: linear-gradient(315deg,
+    #3b3db7 0%, #367edc 74%);
+}
+
+.pattern:before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 300px;
+    background: url(https://media.geeksforgeeks.org/wp-content/uploads/20200326181026/wave3.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+#answerDiv{
+    text-align: center;
+}

@@ -496,11 +496,14 @@
         let table = document.createElement("table");
         let th = document.createElement("th");
         let text = document.createElement("p");
-
+        let language = document.querySelector("select");
         th.style.width = "18rem"
         th.style.border = "1pxsolidblack"
         th.className = "tabulkaBranko"
         text.innerText = "Active users"
+        if (language.value == "SK") {
+            link = document.createTextNode("Aktívny používatelia");
+        }
         th.appendChild(text);
         table.appendChild(th);
         let tbody = document.createElement("tbody");
