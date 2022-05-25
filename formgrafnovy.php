@@ -262,7 +262,7 @@
 
                             let car = new fabric.Rect({
                                 left: 210,
-                                top: 350,
+                                top: 200,
                                 fill: 'blue',
                                 width: 80,
                                 height: 30,
@@ -272,7 +272,7 @@
                                 selectable: false
                             });
 
-                            let lineBottom = new fabric.Line([150, 380, 350, 380], {
+                            let lineBottom = new fabric.Line([180, 410, 320, 410], {
                                 stroke: 'black',
                                 selectable: false
                             })
@@ -308,7 +308,7 @@
                                 });
 
                                 lineBottom.animate({
-                                    left: 150,
+                                    left: 180,
                                     top: 380 - 100 * numberWheel
                                 }, {
                                     onChange: canvas.renderAll.bind(canvas),
@@ -318,7 +318,7 @@
 
                                 car.animate({
                                     left: 210,
-                                    top: 200 - 100 * numberCar
+                                    top: 200 - 200 * numberCar
                                 }, {
                                     onChange: canvas.renderAll.bind(canvas),
                                     duration: 2000,
@@ -339,7 +339,7 @@
 
                                 car.animate({
                                     left: 210,
-                                    top: 200 - 100 * numberCar
+                                    top: 200 - 200 * numberCar
                                 }, {
                                     onChange: canvas.renderAll.bind(canvas),
                                     duration: 2000,
@@ -347,7 +347,7 @@
                                 });
 
                                 lineBottom.animate({
-                                    left: 150,
+                                    left: 180,
                                     top: 280 - 100 * numberWheel
                                 }, {
                                     onChange: canvas.renderAll.bind(canvas),
