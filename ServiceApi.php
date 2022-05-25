@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
     if ($token != null) {
         if (isset($_GET['r'])) {
             $r = $_GET['r'];
-            if(-0.4 < $r && $r > 0.6 ){
+            if(-0.6 < $r && $r > 0.6 ){
                 http_response_code(400);
                 echo json_encode("Bad Request");
             }

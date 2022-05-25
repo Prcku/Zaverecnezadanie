@@ -10,66 +10,107 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
     <script src="https://cdn.plot.ly/plotly-2.12.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/521/fabric.min.js"></script>
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <link href="css/style1.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/style2.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <title>Final assignment</title>
 </head>
 
 <body>
-<section class="pattern">
+    <section class="pattern">
     <div class="geeks">
-<header>
-    <h1 id="Nadpis">Final assignment</h1>
-</header>
+    <header>
+        <h1 id="Nadpis">Final assignment</h1>
+    </header>
 
-<div class="container">
-    <div class="buttons">
-        <div class="col-sm-5 mx-auto" >
-            <select class="form-select m-3" aria-label="Default select example">
-                <option>EN</option>
-                <option>SK</option>
-            </select>
+    <div class="container">
+        <div class="buttons">
+            <div class="col-sm-5 mx-auto" >
+                <select class="form-select m-3" aria-label="Default select example">
+                    <option>EN</option>
+                    <option>SK</option>
+                </select>
+            </div>
+            <form method="post" action="email.php">
+                <a class="btn btn-secondary btn-lg h-50 m-3" href="description.php" id="popisApiPdf">User Guide</a>
+
+                <input type="hidden" name="message">
+                <button type="submit" name="send_mail_button" class="btn btn-secondary btn-lg m-3" id="sendMail">Send email</button>
+                <button type="button" id="button1" onclick="getCSV()" class="btn btn-secondary btn-lg m-3">CSV</button>
+            </form>
         </div>
-
-
-        <form method="post" action="email.php">
-            <a class="btn btn-secondary btn-lg h-50 m-3" href="description.php" id="popisApiPdf">Describe API</a>
-
-            <input type="hidden" name="message">
-            <button type="submit" name="send_mail_button" class="btn btn-secondary btn-lg m-3" id="sendMail">Send email</button>
-        </form>
+        </section>
     </div>
-    </section>
-</div>
     <form>
         <div class="form-group col-sm-5 mx-auto">
             <label for="name" id="names">Name</label>
             <input type="text" class="form-control mb-3" id="name" name="name">
             <label for="textname" id="text">Command</label>
             <input type="text" id="textname" name="textname" class="form-control mb-3">
-
-            <div class="popup">
-                <label for="textR" id="text">R</label>
-                <input type="number" id="textR" name="textR" min="-0.5" max="0.5" class="form-control mb-3">
-                <span class="popuptext" id="myPopup">Wrong input, range is </span>
+            <div class="container">
+                <label for="textR" id="textt">r</label>
+                <div class="popup">
+                        <input type="number" id="textR" name="textR" min="-0.5" max="0.5" class="form-control mb-3">
+                        <span class="popuptext" id="myPopup">Wrong input, range is between 0.5 to -0.5</span>
+                </div>
+                <button type="button" id="button" onclick="ApiFunction()" class="btn btn-secondary btn-lg m-3">Send</button>
             </div>
-            <button type="button" id="button" onclick="ApiFunction()" class="btn btn-dark mb-3">Send</button>
         </div>
     </form>
-<div id="tabulka">
-
-</div>
-
+    <div id="tabulka"> </div>
+    <div id="checkBox">
+        <div id="checkBo">
+            <fieldset>
+                <div id="checkB">
+                    <legend id="legend">Choose:</legend><br>
+                </div>
+                <div id="check">
+                    <div >
+                        <input type="checkbox" id="GraphBox" name="GraphBox" checked>
+                        <label id="GraphBoxlabel" for="GraphBox">Graph</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="AnimationBox" name="AnimationBox" checked>
+                        <label id="AnimationBoxlabel" for="AnimationBox">Animation</label>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
     <div id="answerDiv"></div>
-
-    <canvas id="animation" width="600" height="550"></canvas>
-
-    <div id="graph"></div>
-
-</div>
-
+    <div id="graphics">
+        <canvas id="animation" width="600" height="450"></canvas>
+        <div id="graph" style="width: 60%;"></div>
+    </div>
+<div class="newLayer" id="newLayer"></div>
+</body>
+</html>
 <script>
+    let graphBox = document.getElementById("GraphBox");
+    let animationBox = document.getElementById("AnimationBox");
+    let graph = document.getElementById("graph");
+    let animation = document.getElementById("animation");
+    graphBox.addEventListener("change",() => {
+        if(graphBox.checked == true){
+            graph.style.visibility = "visible";
+        }
+        else {
+            graph.style.visibility = "hidden";
+        }
+    })
+    animationBox.addEventListener("change",() => {
+        if(animationBox.checked == true){
+            animation.style.visibility = "visible";
+        }
+        else {
+            animation.style.visibility = "hidden";
+        }
+    })
+
+
     //branko
     const socket = new WebSocket('wss://site163.webte.fei.stuba.sk:9000');
 
@@ -86,10 +127,20 @@
         titleGraph = "Graph"
 
     language.addEventListener('change', () => {
+        let p = document.querySelector("p");
+        let legend = document.getElementById("legend");
+        let graphBoxLabel = document.getElementById("GraphBoxlabel");
+        let animationBoxLabel = document.getElementById("AnimationBoxlabel");
         let labelCommand = document.getElementById("text");
         let name = document.getElementById("names");
         let nadpis = document.getElementById("Nadpis");
+        let popup = document.getElementById("myPopup");
         if (language.value == "EN") {
+            legend.innerHTML = "Choose"
+            p.innerHTML = "Active users"
+            graphBoxLabel.innerHTML = "Graph"
+            animationBoxLabel.innerHTML = "Animation"
+            popup.innerHTML = "Wrong input, range is between -0.5 to 0.5"
             title.innerHTML = "Final assignment"
             button.innerHTML = "Send";
             labelCommand.innerText = "Command"
@@ -97,12 +148,17 @@
             trace1Name = "Automobile"
             traceName = "Wheel"
             titleGraph = "Graph"
-            describeApiInPdfButton.innerHTML = "Describe API"
+            describeApiInPdfButton.innerHTML = "User Guide"
             sendMailButton.innerHTML = "Send mail"
             buttonSendR.innerHTML = "Send"
             nadpis.innerHTML = "Final assignment"
         }
         if (language.value == "SK") {
+            p.innerHTML = "Aktívni používatelia"
+            legend.innerHTML = "Výber zobrazenia"
+            graphBoxLabel.innerHTML = "Graf"
+            animationBoxLabel.innerHTML = "Animácia"
+            popup.innerHTML = "Zlý vstup, rozsah hodnôt je medzi -0.5 až 0.5"
             title.innerHTML = "Záverečné zadanie"
             button.innerHTML = "Odoslať";
             labelCommand.innerText = "Príkaz"
@@ -110,16 +166,57 @@
             trace1Name = "Karoséria"
             traceName = "Koleso"
             titleGraph = "Graf"
-            describeApiInPdfButton.innerHTML = "Popis API"
+            describeApiInPdfButton.innerHTML = "Používateľská príručka"
             sendMailButton.innerHTML = "Odoslať mail"
             buttonSendR.innerHTML = "Odoslať"
             nadpis.innerHTML = "Záverečné zadanie"
         }
     })
+    const getCSV = () => {
+            fetch(`/zaverecnezadanie/GetCsv.php`, {
+                method: 'GET',
+                headers: {
+                    'x-api-key': 'asdfwe4q489qfweasd'
+                }
+            }).then(response => {
+                var a = document.createElement('a');
 
+                var link = document.createTextNode("Download CSV");
+                
+                if (language.value == "SK") {
+                    link = document.createTextNode("Stiahnuť CSV");
+                }
+
+                // Append the text node to anchor element.
+                a.appendChild(link);
+
+                // Set the title.
+                a.title = "CSV";
+
+                // Set the href property.
+                a.href = "logy.csv";
+
+                // Append the anchor element to the body.
+                //document.body.prepend(a);
+                var layer = document.getElementById("newLayer")
+                document.getElementById("newLayer").style.display = 'block';
+                a.className = "aElement";
+
+                var close = document.createElement("div");
+                close.className = "close";
+                layer.appendChild(close);
+                layer.appendChild(a);
+
+                close.addEventListener("click", function () {
+                    layer.style.display = 'none';
+                    layer.innerHTML = '';
+                });
+            })
+    }
     const ApiFunction = () => {
         let canvas = document.getElementById('animation');
-
+        let popup = document.getElementById("myPopup");
+        popup.style.visibility = "hidden";
         let numbers = []
         var inputCommand = document.getElementById("name");
         if (inputCommand.value.length == 0) {
@@ -129,6 +226,13 @@
         answerDiv.innerHTML = "";
         let text = document.getElementById("textname");
         let r = document.getElementById("textR");
+        if(r.value < -0.6 || r.value > 0.6){
+            if (inputCommand.value === "anonym") {
+                inputCommand.value = "";
+            }
+            popup.style.visibility = "visible";
+            return;
+        }
         text = encodeURIComponent(text.value);
         answerDiv.innerHTML = "";
         if (text.length != 0) {
@@ -187,14 +291,14 @@
                         const graph = document.getElementById("graph");
 
                         let trace = {
-                            name: traceName,
+                            name: trace1Name,
                             x: dataX,
                             y: dataY,
                             mode: 'lines'
                         };
 
                         let trace1 = {
-                            name: trace1Name,
+                            name: traceName,
                             x: dataX,
                             y: dataD,
                             mode: 'lines'
@@ -249,23 +353,23 @@
 
                             fabric.Object.prototype.transparentCorners = true;
 
-                            let car = new fabric.Circle({
+                            let wheel = new fabric.Circle({
                                 radius: 30,
-                                fill: 'blue',
+                                fill: 'orange',
                                 originX: 'center',
                                 originY: 'center',
                                 left: 250,
                                 top: 350 + 30,
                                 objectCaching: false,
-                                stroke: 'lightgray',
+                                stroke: 'darkgray',
                                 strokeWidth: 3,
                                 selectable: false
                             })
 
-                            let wheel = new fabric.Rect({
+                            let car = new fabric.Rect({
                                 left: 210,
-                                top: 350,
-                                fill: 'orange',
+                                top: 200,
+                                fill: 'blue',
                                 width: 80,
                                 height: 30,
                                 objectCaching: false,
@@ -274,78 +378,8 @@
                                 selectable: false
                             });
 
-                            let line = new fabric.Line([100, 20, 100, 500], {
+                            let lineBottom = new fabric.Line([180, 410, 320, 410], {
                                 stroke: 'black',
-                                selectable: false
-                            })
-
-                            let lineBottom = new fabric.Line([100, 500, 450, 500], {
-                                stroke: 'black',
-                                selectable: false
-                            })
-
-                            let zeroLine = new fabric.Line([90, 420, 110, 420], {
-                                stroke: 'black',
-                                selectable: false
-                            })
-
-                            let zeroNumber = new fabric.Text('0', {
-                                fontFamily: 'Delicious_500',
-                                fontSize: 15,
-                                left: 70,
-                                top: 410,
-                                selectable: false
-                            })
-
-                            let topLine = new fabric.Line([90, 330, 110, 330], {
-                                stroke: 'black',
-                                selectable: false
-                            })
-
-                            let topNumber = new fabric.Text('0.15', {
-                                fontFamily: 'Delicious_500',
-                                fontSize: 15,
-                                left: 50,
-                                top: 320,
-                                selectable: false
-                            })
-
-                            let topTopLine = new fabric.Line([90, 240, 110, 240], {
-                                stroke: 'black',
-                                selectable: false
-                            })
-
-                            let topTopNumber = new fabric.Text('0.3', {
-                                fontFamily: 'Delicious_500',
-                                fontSize: 15,
-                                left: 60,
-                                top: 230,
-                                selectable: false
-                            })
-
-                            let topTopTopLine = new fabric.Line([90, 150, 110, 150], {
-                                stroke: 'black',
-                                selectable: false
-                            })
-
-                            let topTopTopNumber = new fabric.Text('0.45', {
-                                fontFamily: 'Delicious_500',
-                                fontSize: 15,
-                                left: 50,
-                                top: 140,
-                                selectable: false
-                            })
-
-                            let topTopTopTopLine = new fabric.Line([90, 60, 110, 60], {
-                                stroke: 'black',
-                                selectable: false
-                            })
-
-                            let topTopTopTopNumber = new fabric.Text('0.6', {
-                                fontFamily: 'Delicious_500',
-                                fontSize: 15,
-                                left: 60,
-                                top: 50,
                                 selectable: false
                             })
 
@@ -372,8 +406,17 @@
                                 }
 
                                 wheel.animate({
-                                    left: 210,
-                                    top: 350 - 500 * numberWheel
+                                    left: 250,
+                                    top: 350 - 100 * numberWheel
+                                }, {
+                                    onChange: canvas.renderAll.bind(canvas),
+                                    duration: 2000,
+                                    easing: fabric.util.ease.easeOutExpo
+                                });
+
+                                lineBottom.animate({
+                                    left: 180,
+                                    top: 380 - 100 * numberWheel
                                 }, {
                                     onChange: canvas.renderAll.bind(canvas),
                                     duration: 2000,
@@ -381,8 +424,8 @@
                                 });
 
                                 car.animate({
-                                    left: 250,
-                                    top: 400 - 500 * numberCar
+                                    left: 210,
+                                    top: 200 - 200 * numberCar
                                 }, {
                                     onChange: canvas.renderAll.bind(canvas),
                                     duration: 2000,
@@ -401,18 +444,27 @@
                                 let numberCar = dataYy[0];
                                 let numberWheel = dataDd[0];
 
-                                wheel.animate({
+                                car.animate({
                                     left: 210,
-                                    top: 400 + 500 * numberWheel
+                                    top: 200 - 200 * numberCar
                                 }, {
                                     onChange: canvas.renderAll.bind(canvas),
                                     duration: 2000,
                                     easing: fabric.util.ease.easeOutExpo
                                 });
 
-                                car.animate({
+                                lineBottom.animate({
+                                    left: 180,
+                                    top: 280 - 100 * numberWheel
+                                }, {
+                                    onChange: canvas.renderAll.bind(canvas),
+                                    duration: 2000,
+                                    easing: fabric.util.ease.easeOutExpo
+                                });
+
+                                wheel.animate({
                                     left: 250,
-                                    top: 400 + 500 * numberCar
+                                    top: 250 - 100 * numberWheel
                                 }, {
                                     onChange: canvas.renderAll.bind(canvas),
                                     duration: 2000,
@@ -426,18 +478,7 @@
 
                             canvas.add(car);
                             canvas.add(wheel);
-                            canvas.add(line);
                             canvas.add(lineBottom);
-                            canvas.add(zeroLine);
-                            canvas.add(zeroNumber);
-                            canvas.add(topLine);
-                            canvas.add(topNumber);
-                            canvas.add(topTopLine);
-                            canvas.add(topTopNumber);
-                            canvas.add(topTopTopLine);
-                            canvas.add(topTopTopNumber);
-                            canvas.add(topTopTopTopLine);
-                            canvas.add(topTopTopTopNumber);
                         }
                     })
             userName = inputCommand.value;
@@ -454,7 +495,13 @@
         div.innerHTML = '';
         let table = document.createElement("table");
         let th = document.createElement("th");
-        th.innerText = "Host"
+        let text = document.createElement("p");
+
+        th.style.width = "18rem"
+        th.style.border = "1pxsolidblack"
+        th.className = "tabulkaBranko"
+        text.innerText = "Active users"
+        th.appendChild(text);
         table.appendChild(th);
         let tbody = document.createElement("tbody");
         for (let i = 0; i < test2.length; i++) {
@@ -463,7 +510,8 @@
             }else{
                 let tr = document.createElement("tr");
                 let butt = document.createElement("button");
-                // butt.classList.add('butt')
+                butt.style.width = "18rem"
+                butt.className = "btn btn-outline-primary ";
                 butt.addEventListener('click', () => {
                     console.log("test")
                     socket.send(JSON.stringify(test2[i][1].name))
@@ -495,14 +543,14 @@
 
             const graph = document.getElementById("graph");
             let trace = {
-                name: traceName,
+                name: trace1Name,
                 x: dataX,
                 y: dataY,
                 mode: 'lines'
             };
 
             let trace1 = {
-                name: trace1Name,
+                name: traceName,
                 x: dataX,
                 y: dataD,
                 mode: 'lines'
@@ -548,23 +596,22 @@
                 let canvas = this.__canvas = new fabric.Canvas('animation');
                 fabric.Object.prototype.transparentCorners = true;
 
-                let car = new fabric.Circle({
-                    radius: 30,
-                    fill: 'blue',
+                let wheel = new fabric.Circle({radius: 30,
+                    fill: 'orange',
                     originX: 'center',
                     originY: 'center',
                     left: 250,
-                    top: 350 + 30,
+                    top: 350+30,
                     objectCaching: false,
-                    stroke: 'lightgray',
+                    stroke: 'darkgray',
                     strokeWidth: 3,
                     selectable: false
                 })
 
-                let wheel = new fabric.Rect({
+                let car = new fabric.Rect({
                     left: 210,
-                    top: 350,
-                    fill: 'orange',
+                    top: 200,
+                    fill: 'blue',
                     width: 80,
                     height: 30,
                     objectCaching: false,
@@ -573,78 +620,8 @@
                     selectable: false
                 });
 
-                let line = new fabric.Line([100, 20, 100, 500], {
+                let lineBottom = new fabric.Line([180, 410, 320, 410], {
                     stroke: 'black',
-                    selectable: false
-                })
-
-                let lineBottom = new fabric.Line([100, 500, 450, 500], {
-                    stroke: 'black',
-                    selectable: false
-                })
-
-                let zeroLine = new fabric.Line([90, 420, 110, 420], {
-                    stroke: 'black',
-                    selectable: false
-                })
-
-                let zeroNumber = new fabric.Text('0', {
-                    fontFamily: 'Delicious_500',
-                    fontSize: 15,
-                    left: 70,
-                    top: 410,
-                    selectable: false
-                })
-
-                let topLine = new fabric.Line([90, 330, 110, 330], {
-                    stroke: 'black',
-                    selectable: false
-                })
-
-                let topNumber = new fabric.Text('0.15', {
-                    fontFamily: 'Delicious_500',
-                    fontSize: 15,
-                    left: 50,
-                    top: 320,
-                    selectable: false
-                })
-
-                let topTopLine = new fabric.Line([90, 240, 110, 240], {
-                    stroke: 'black',
-                    selectable: false
-                })
-
-                let topTopNumber = new fabric.Text('0.3', {
-                    fontFamily: 'Delicious_500',
-                    fontSize: 15,
-                    left: 60,
-                    top: 230,
-                    selectable: false
-                })
-
-                let topTopTopLine = new fabric.Line([90, 150, 110, 150], {
-                    stroke: 'black',
-                    selectable: false
-                })
-
-                let topTopTopNumber = new fabric.Text('0.45', {
-                    fontFamily: 'Delicious_500',
-                    fontSize: 15,
-                    left: 50,
-                    top: 140,
-                    selectable: false
-                })
-
-                let topTopTopTopLine = new fabric.Line([90, 60, 110, 60], {
-                    stroke: 'black',
-                    selectable: false
-                })
-
-                let topTopTopTopNumber = new fabric.Text('0.6', {
-                    fontFamily: 'Delicious_500',
-                    fontSize: 15,
-                    left: 60,
-                    top: 50,
                     selectable: false
                 })
 
@@ -670,8 +647,17 @@
                     }
 
                     wheel.animate({
-                        left: 210,
-                        top: 350 - 500 * numberWheel
+                        left: 250,
+                        top: 350 - 100 * numberWheel
+                    }, {
+                        onChange: canvas.renderAll.bind(canvas),
+                        duration: 2000,
+                        easing: fabric.util.ease.easeOutExpo
+                    });
+
+                    lineBottom.animate({
+                        left: 180,
+                        top: 380 - 100 * numberWheel
                     }, {
                         onChange: canvas.renderAll.bind(canvas),
                         duration: 2000,
@@ -679,8 +665,8 @@
                     });
 
                     car.animate({
-                        left: 250,
-                        top: 400 - 500 * numberCar
+                        left: 210,
+                        top: 200 - 200 * numberCar
                     }, {
                         onChange: canvas.renderAll.bind(canvas),
                         duration: 2000,
@@ -696,18 +682,27 @@
                     let numberCar = dataYy[0];
                     let numberWheel = dataDd[0];
 
-                    wheel.animate({
+                    car.animate({
                         left: 210,
-                        top: 400 + 500 * numberWheel
+                        top: 200 - 200 * numberCar
                     }, {
                         onChange: canvas.renderAll.bind(canvas),
                         duration: 2000,
                         easing: fabric.util.ease.easeOutExpo
                     });
 
-                    car.animate({
+                    lineBottom.animate({
+                        left: 180,
+                        top: 280 - 100 * numberWheel
+                    }, {
+                        onChange: canvas.renderAll.bind(canvas),
+                        duration: 2000,
+                        easing: fabric.util.ease.easeOutExpo
+                    });
+
+                    wheel.animate({
                         left: 250,
-                        top: 400 + 500 * numberCar
+                        top: 250 - 100 * numberWheel
                     }, {
                         onChange: canvas.renderAll.bind(canvas),
                         duration: 2000,
@@ -721,18 +716,7 @@
 
                 canvas.add(car);
                 canvas.add(wheel);
-                canvas.add(line);
                 canvas.add(lineBottom);
-                canvas.add(zeroLine);
-                canvas.add(zeroNumber);
-                canvas.add(topLine);
-                canvas.add(topNumber);
-                canvas.add(topTopLine);
-                canvas.add(topTopNumber);
-                canvas.add(topTopTopLine);
-                canvas.add(topTopTopNumber);
-                canvas.add(topTopTopTopLine);
-                canvas.add(topTopTopTopNumber);
             }
         }
         let rotate = function (arr) {
@@ -741,7 +725,3 @@
         };
     })
 </script>
-
-</body>
-
-</html>

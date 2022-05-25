@@ -1,134 +1,56 @@
-.item1 { grid-area: header; }
-.item2 { grid-area: menu; }
-.item3 { grid-area: main; }
-.item4 { grid-area: right; }
-.item5 { grid-area: footer; }
-
-.grid-container {
-    display: grid;
-    grid-template-areas:
-    'header header header header header header'
-    'menu main main main right right'
-    'menu footer footer footer footer footer';
-    gap: 10px;
-    /*background-color: #2196F3;*/
-    padding: 10px;
+.popup {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
-button {
-    padding: 3%;
-}
-
-.buttons {
+/* The actual popup */
+.popup .popuptext {
+    visibility: hidden;
+    width: 160px;
+    background-color: #555;
+    color: #fff;
     text-align: center;
+    border-radius: 6px;
+    padding: 8px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -80px;
 }
 
-.grid-container > div {
-    /*background-color: rgba(255, 255, 255, 0.8);*/
-    text-align: center;
-    padding: 20px 0;
-    font-size: 30px;
+/* Popup arrow */
+.popup .popuptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
 }
 
-h1, h2, h3, h4 {
-    text-align: center;
-    /*margin: 15px;
-    margin-bottom: 40px;*/
+/* Toggle this class - hide and show the popup */
+.popup .show {
+    visibility: visible;
+    -webkit-animation: fadeIn 1s;
+    animation: fadeIn 1s;
 }
 
-h2, h4 {
-    margin-top: 3%;
+/* Add animation (fade in the popup) */
+@-webkit-keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
 }
 
-html, body {
-    height: 100%;
-    margin: 15px;
-    padding: 0;
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity:1 ;}
 }
 
-.center {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    width: 50%;
-}
-
-.content {
-    min-width: 350px;
-    margin-left: auto;
-    margin-right: auto;
-    height: 100%;
-    align-content: center;
-    margin-bottom: 30%;
-}
-
-.container {
-    margin: auto;
-    padding-bottom: 5%;
-
-    align-content: center;
-    margin-left: auto;
-    margin-right: auto;
-    /*text-align: center;*/
-}
-
-.formButtons {
-    padding-top: 1%;
-    padding-bottom: 1%;
-    text-align: end;
-}
-
-@media print {
-    button {
-        display: none;
-    }
-    title {
-        display: none;
-    }
-    footer {
-        display: none;
-    }
-    h1 {
-        margin-top: 20px;
-    }
-    #linkToMainpage {
-        display: none;
-    }
-    #generatePdfButton {
-        display: none;
-    }
-    select {
-        display: none;
-    }
-    #selectik {
-        display: none;
-    }
-}
-
-@media (min-width: 576px) {
-    .content {
-        width: 540px;;
-        /*min-height: 977px;*/
-    }
-}
-
-@media (min-width: 768px) {
-    .content {
-        width: 720px;
-        /*min-height: 969px;*/
-    }
-}
-
-@media (min-width: 992px) {
-    .content {
-        width: 960px;
-        /*min-height: 965px;*/
-    }
-}
-
-@media (min-width: 1200px) {
-    .content {
-        width: 1140px;
-        /*min-height: 961px;*/
-    }
-}
