@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h1>Ahoj</h1>
+    <button type="button" onclick="odoslanie()">aaa</button>
+    <label for="name" id="names">Name</label>
+    <input type="text" id="name" name="name">
+<script>
+
+    const socket = new WebSocket('wss://site163.webte.fei.stuba.sk:9000');
+
+
+    function odoslanie() {
+        let inputCommand = document.getElementById("name");
+        if (inputCommand.value.length == 0){
+            inputCommand.value = "anonym"
+        }
+        else {
+            const join = {
+                "method": "join",
+                "name": inputCommand.value
+            }
+            socket.send(JSON.stringify(join));
+        }
+    }
+    socket.addEventListener("message",msg => {
+        let test = JSON.parse(msg.data);
+        console.log(test);
+    })
+
+</script>
+</body>
+</html>
